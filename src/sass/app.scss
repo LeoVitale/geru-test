@@ -1,0 +1,12 @@
+@import './normilize.scss';
+body {
+  background-color: $body-background-color;
+}
+
+fieldset {
+  border: none;
+}
+
+label {
+  display: block;
+}
