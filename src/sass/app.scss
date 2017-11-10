@@ -1,14 +1,158 @@
 @import './normalize.scss';
+@import './flexbox-grid.scss';
+@import './mixins.scss';
+@import './fonts.scss';
+* {
+  outline: none;
+  box-sizing: border-box;
+}
+
 body {
   background-color: $body-background-color;
+  font-family: "Gotham A", "Gotham B", Arial;
+  font-style: normal;
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
 fieldset {
   border: none;
+  padding: 0;
+  margin: 0;
+}
+
+label {
+  position: relative;
+  display: block;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 50px;
 }
 
 .form-item {
+  max-width: 900px;
+  margin: 50px auto 0;
+  padding: 0 1em;
+  @include screen-tablet {
+    padding: 0 1em;
+  }
+  @include screen-desktop {
+    padding: 0 0;
+  }
   .label {
     display: block;
+    font-size: 12px;
+    margin-bottom: 10px;
   }
+  input[type=text],
+  select {
+    width: 100%;
+    color: #000;
+    background: $input-background-color;
+    border: 3px solid #000;
+    border-radius: 0;
+    padding: 0.6em 2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &.form-error{
+      border-color: $error-color;
+      color: $error-color;
+      &+.label {
+        top: -20px;
+        position: absolute;
+        color: $error-color;
+      }
+      &:focus {
+        border-color: $error-color;
+        color: $error-color;
+        &+.label {
+          color: $error-color;
+        }
+      }
+    }
+    &+.label {
+      top: -20px;
+      position: absolute;
+    }
+    &:focus {
+      border-color: $focus-color;
+      color: $focus-color;
+      &+.label {
+        color: $focus-color;
+      }
+    }
+  }
+  select {
+    cursor: pointer;
+  }
+  input[type=radio] {
+    cursor: pointer;
+    border: 3px solid #000;
+    width: 100%;
+    height: auto;
+    -webkit-appearance: button;
+    text-transform: uppercase;
+    font-weight: bold;
+    &:checked {
+      border: 3px solid $focus-color;
+      background-color: $focus-color;
+      color: white;
+    }
+    &:focus {
+      outline: 0;
+    }
+    &:after {
+      content: attr(value);
+      position: relative;
+      text-align: center;
+      padding: 0.6em 0;
+      display: block;
+    }
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
+    padding: 1em;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: $button-background-color;
+    color: #fff;
+    margin: auto;
+    display: block;
+    min-width: 250px;
+  }
+  .field-genre {
+    text-align: left;
+    display: block;
+    margin: auto;
+    @include screen-tablet {
+      text-align: center;
+    }
+    label {
+      display: inline-block;
+    }
+    span {
+      margin-right: 10px;
+      @include screen-tablet {
+        display: inline-block;
+      }
+    }
+    label {
+      margin: 0 5px;
+      width: calc(50% - 10px);
+      @include screen-tablet {
+        width: 20%;
+      }
+    }
+  }
+}
+
+.box-container {
+  padding: 1em 0;
 }

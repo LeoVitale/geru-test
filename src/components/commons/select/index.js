@@ -10,7 +10,6 @@ class Select extends Component {
     const error = this.props.error ? 'form-error' : '';
     return (
       <label>
-        <span className="label">{this.props.label}</span>
         <select name={this.props.name} onChange={this.handleChange} className={error}>
           {
             this.props.items.map(item => {
@@ -22,6 +21,7 @@ class Select extends Component {
             })
           }
         </select>
+        <span className="label">{this.props.label}</span>
       </label>
     );
   }

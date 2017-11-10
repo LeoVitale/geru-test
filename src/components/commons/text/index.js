@@ -11,7 +11,6 @@ class Text extends Component {
     const error = this.props.error ? 'form-error' : '';
     return (
       <label>
-        <span className="label">{this.props.label}</span>
         <MaskedInput
           mask={this.props.mask}
           type="text"
@@ -20,6 +19,7 @@ class Text extends Component {
           value={this.props.value}
           placeholderChar=" "
           className={error}/>
+          <span className="label">{this.props.label}</span>
       </label>
     );
   }

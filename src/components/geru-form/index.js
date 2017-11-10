@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import { getSelectItems } from '../../api';
+import { getSelectItems, sendForm } from '../../api';
 import Select from '../commons/select';
 import Text from '../commons/text';
 import RadioGroup from '../commons/radio-group';
 
+function existsValue(obj, value) {
+  return Object.keys(obj).some(function (k) {
+    return obj[k] === value;
+  });
+}
+
 class GeruForm extends Component {
   state = {
     orgao_emissor: [],
+    formValidated: false,
     canSubmit: true,
     form: {
       rg: '',
@@ -38,17 +45,20 @@ class GeruForm extends Component {
     let form = { ...this.state.form };
     form[name] = value;
     this.setState({ ...this.state, form });
+    if (!this.state.canSubmit) {
+      this.validateForm(form);
+    }
   }
 
   validateForm = (form) => {
+
+    const datePattern = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
     const { rg, data_emissao, orgao_expedidor, sexo } = form;
     let errorForm = { ...this.state.errorForm };
 
-    const datePattern = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
-
     if (rg) {
       errorForm.rg = rg.replace(/ /g, '').length > 5 ? false : true;
-    }else{
+    } else {
       errorForm.rg = true;
     }
 
@@ -64,48 +74,88 @@ class GeruForm extends Component {
       errorForm.orgao_expedidor = true;
     }
 
-    this.setState({ errorForm });
-
+    let exists = existsValue(errorForm, true);
+    this.setState({ errorForm, canSubmit: exists ? false : true, formValidated: !exists});
+    return exists ? false : true;
   }
 
   onSubmit = () => {
-    this.validateForm(this.state.form);
+    const valitaded = this.validateForm(this.state.form);
+    if (valitaded) {
+      sendForm(this.state.form).then(response => {
+        console.log(response);
+        alert(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
   }
 
   render() {
     const { orgao_emissor, errorForm } = this.state;
     return (
       <div className="form-item">
-        <Text
-          mask="11 111 111 11"
-          name="rg"
-          label="Número do RG"
-          value={this.state.rg}
-          changeValue={this.updateFormValues}
-          value={this.state.form.rg}
-          error={errorForm.rg}/>
-        <Text
-          mask="11/11/1111"
-          name="data_emissao"
-          label="Data de Emissão"
-          value={this.state.data_emissao}
-          changeValue={this.updateFormValues}
-          value={this.state.form.data_emissao}
-          error={errorForm.data_emissao}/>
-        <Select
-          name="orgao_expedidor"
-          label="Orgão Expedidor"
-          items={orgao_emissor}
-          value={this.state.orgao_expedidor}
-          changeValue={this.updateFormValues}
-          value={this.state.form.data_emissao}
-          error={errorForm.orgao_expedidor}/>
-        <RadioGroup
-          name="sexo"
-          label="sexo"
-          changeValue={this.updateFormValues}
-          value={this.state.form.sexo}/>
-        <button disabled={!this.state.canSubmit} onClick={this.onSubmit}>Continuar</button>
+        <h1>Dados Pessoais</h1>
+        <div className="row">
+          <div className="col-xs-12 col-sm-4">
+            <div className="box box-container">
+              <Text
+                mask="11 111 111 11"
+                name="rg"
+                label="Número do RG"
+                value={this.state.rg}
+                changeValue={this.updateFormValues}
+                value={this.state.form.rg}
+                error={errorForm.rg} />
+            </div>
+          </div>
+          <div className="col-xs-12 col-sm-4">
+            <div className="box box-container">
+              <Text
+                mask="11/11/1111"
+                name="data_emissao"
+                label="Data de Emissão"
+                value={this.state.data_emissao}
+                changeValue={this.updateFormValues}
+                value={this.state.form.data_emissao}
+                error={errorForm.data_emissao} />
+            </div>
+          </div>
+          <div className="col-xs-12 col-sm-4">
+            <div className="box box-container">
+              <Select
+                name="orgao_expedidor"
+                label="Orgão Expedidor"
+                items={orgao_emissor}
+                value={this.state.orgao_expedidor}
+                changeValue={this.updateFormValues}
+                value={this.state.form.data_emissao}
+                error={errorForm.orgao_expedidor} />
+            </div>
+          </div>
+        </div>
+
+        <div className="row center-xs">
+          <div className="col-xs-12">
+            <div className="box box-container">
+              <RadioGroup
+                name="sexo"
+                label="sexo"
+                changeValue={this.updateFormValues}
+                value={this.state.form.sexo} />
+            </div>
+          </div>
+        </div>
+
+        <div className="row center-xs">
+          <div className="col-xs-12">
+            <div className="box box-container">
+              <button disabled={!this.state.canSubmit} onClick={this.onSubmit}>Continuar</button>
+            </div>
+          </div>
+        </div>
+
       </div>
     );
   }
