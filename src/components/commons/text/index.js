@@ -1,20 +1,25 @@
 import React, { Component } from 'react';
+import MaskedInput from 'react-maskedinput';
 
 class Text extends Component {
 
-  state = {
-    value: ''
-  }
-
   handleChange = (event) => {
-    this.setState({value: event.target.value});
+    this.props.changeValue(this.props.name, event.target.value);
   }
 
   render() {
+    const error = this.props.error ? 'form-error' : '';
     return (
       <label>
-        {this.props.label}
-        <input type="text" name={this.props.name} onChange={this.handleChange}/>
+        <span className="label">{this.props.label}</span>
+        <MaskedInput
+          mask={this.props.mask}
+          type="text"
+          name={this.props.name}
+          onChange={this.handleChange}
+          value={this.props.value}
+          placeholderChar=" "
+          className={error}/>
       </label>
     );
   }
